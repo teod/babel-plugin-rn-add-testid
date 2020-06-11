@@ -27,44 +27,52 @@ const checkForAttribute = (name, attributes) =>
 
 let unknownCount = -1;
 
-module.exports = function (_ref) {
-  var t = _ref.types;
+const defaultComponents = ['Text'];
+
+module.exports = function (_ref, opts) {
+  const t = _ref.types;
+
+  const nameComps =
+    Array.isArray(opts.components) && opts.components.length
+      ? opts.components
+      : defaultComponents;
+
   return {
     visitor: {
       JSXElement: {
         enter(path) {
           try {
             const nameComp = path.node.openingElement.name.name;
-            if (nameComp === 'Text') {
+            if (nameComps.indexOf(nameComp) !== -1) {
               const { children } = path.node;
 
               // remove empty children
-              const cookedChildren = children.filter(child => {
+              const cookedChildren = children.filter((child) => {
                 if (!child) {
-                  return false
+                  return false;
                 }
 
                 if (child.type === 'JSXText') {
                   const { value: v } = child;
 
                   if (!v.trim()) {
-                    return false
+                    return false;
                   }
                 }
 
                 if (child.type === 'JSXElement') {
-                  return false
+                  return false;
                 }
 
-                return true
-              })
+                return true;
+              });
 
               const len = cookedChildren.length;
 
               let attributeValue = '';
 
               if (!len) {
-                unknownCount++
+                unknownCount++;
                 attributeValue = t.stringLiteral(`unknown-${unknownCount}`);
               } else if (len === 1) {
                 const [child] = cookedChildren;
@@ -74,9 +82,11 @@ module.exports = function (_ref) {
                 }
 
                 if (child.type === 'JSXText') {
-                  attributeValue = t.stringLiteral(makeTestId(child.value))
+                  attributeValue = t.stringLiteral(makeTestId(child.value));
                 }
-              } else if (cookedChildren.every(({ type }) => type === 'JSXText')) {
+              } else if (
+                cookedChildren.every(({ type }) => type === 'JSXText')
+              ) {
                 const joinedStringLiteral = cookedChildren.reduce(
                   (acc, child, index) => {
                     const { value: v } = child;
@@ -87,7 +97,10 @@ module.exports = function (_ref) {
 
                     if (index === len - 1 && !acc) {
                       unknownCount++;
-                      return [...acc, t.stringLiteral(`unknown-${unknownCount}`)];
+                      return [
+                        ...acc,
+                        t.stringLiteral(`unknown-${unknownCount}`),
+                      ];
                     }
 
                     return acc;
@@ -99,24 +112,27 @@ module.exports = function (_ref) {
 
                 attributeValue = t.stringLiteral(testID);
               } else {
-                const reducedChildren = cookedChildren.reduce((acc, child, index) => {
-                  const { value: v, type } = child;
+                const reducedChildren = cookedChildren.reduce(
+                  (acc, child, index) => {
+                    const { value: v, type } = child;
 
-                  if (type === 'JSXText' && typeof v === 'string' && v) {
-                    return [...acc, makeTestId(v)];
-                  }
+                    if (type === 'JSXText' && typeof v === 'string' && v) {
+                      return [...acc, makeTestId(v)];
+                    }
 
-                  if (type === 'JSXExpressionContainer') {
-                    return [...acc, child];
-                  }
+                    if (type === 'JSXExpressionContainer') {
+                      return [...acc, child];
+                    }
 
-                  return acc;
-                }, []);
+                    return acc;
+                  },
+                  []
+                );
 
                 const redChildrenLen = reducedChildren.length;
 
                 if (!reducedChildren.length) {
-                  unknownCount++
+                  unknownCount++;
                   attributeValue = t.stringLiteral(`unknown-${unknownCount}`);
                 } else {
                   const possibleTailQuasis = [];
@@ -141,36 +157,34 @@ module.exports = function (_ref) {
                     []
                   );
 
-                  const rawQuasis = reducedChildren.reduce((acc, child, idx) => {
-                    if (typeof child === 'string') {
-                      const tail = idx === redChildrenLen - 1;
+                  const rawQuasis = reducedChildren.reduce(
+                    (acc, child, idx) => {
+                      if (typeof child === 'string') {
+                        const tail = idx === redChildrenLen - 1;
 
-                      const raw = !tail ? `${child}_` : `_${child}`;
+                        const raw = !tail ? `${child}_` : `_${child}`;
 
-                      return [
-                        ...acc,
-                        t.templateElement({ raw, cooked: raw }, tail),
-                      ];
-                    }
+                        return [
+                          ...acc,
+                          t.templateElement({ raw, cooked: raw }, tail),
+                        ];
+                      }
 
-                    return acc;
-                  }, []);
+                      return acc;
+                    },
+                    []
+                  );
 
-                  const possibleEmptyFront = rawQuasis.length === expressions.length
-                    ? [t.templateElement({ raw: '', cooked: '' }, false)]
-                    : []
+                  const possibleEmptyFront =
+                    rawQuasis.length === expressions.length
+                      ? [t.templateElement({ raw: '', cooked: '' }, false)]
+                      : [];
 
                   const quasis = possibleTailQuasis.length
                     ? [...rawQuasis, ...possibleTailQuasis]
-                    : [
-                        ...possibleEmptyFront,
-                        ...rawQuasis,
-                      ];
+                    : [...possibleEmptyFront, ...rawQuasis];
 
-                  const tmpltLiteral = t.templateLiteral(
-                    quasis,
-                    expressions
-                  );
+                  const tmpltLiteral = t.templateLiteral(quasis, expressions);
 
                   attributeValue = t.JSXExpressionContainer(tmpltLiteral);
                 }
@@ -206,7 +220,7 @@ module.exports = function (_ref) {
               }
             }
           } catch (err) {
-            console.info(err)
+            console.info(err);
           }
         },
       },

@@ -37,6 +37,15 @@ module.exports = {
 }
 ```
 
+By default the plugin parses only `<Text />` components, if you want it to parse other component names you can provide a list of component names to parse in your <b>babel config</b>:
+```js
+module.exports = {
+  plugins: [
+    ['rn-add-testid', { components: ['Text', 'H1', 'H2', 'MyText'] }]
+  ]
+}
+```
+
 ## How it works
 
 The plugin parses the contents of the `<Text/>` node and adds its value(s) as <b>testID</b> and <b>accessibilityLabel</b> props. If the `<Text/>` node already has one of these props, it doesn't do anything.
