@@ -32,7 +32,7 @@ yarn add babel-plugin-rn-add-testid --dev
 ```js
 module.exports = {
   plugins: [
-    'rn-add-test-id'
+    'rn-add-testid'
   ]
 }
 ```
@@ -46,6 +46,17 @@ The plugin parses the contents of the `<Text/>` node and adds its value(s) as <b
 <Text>Big brown fox</Text>
 
 <Text>{value}</Text>
+
+<Text>Big brown fox {value}</Text>
+
+<Text
+  testID="myID"
+  accessibilityLabel="My Label"
+>
+  Big brown fox
+</Text>
+
+<Text />
 ```
 <b>out:</b>
 ```javascript
@@ -62,4 +73,20 @@ The plugin parses the contents of the `<Text/>` node and adds its value(s) as <b
 >
   {value}
 </Text>
+
+<Text
+  testID={`big_brown_fox_${value}`}
+  accessibilityLabel={`big_brown_fox_${value}`}
+>
+  Big brown fox {value}
+</Text>
+
+<Text
+  testID="myID"
+  accessibilityLabel="My Label"
+>
+  Big brown fox
+</Text>
+
+<Text testID="unknown-0" accessibilityLabel="unknown-0" />
 ```

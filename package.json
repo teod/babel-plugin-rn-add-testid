@@ -1,13 +1,13 @@
 {
   "name": "babel-plugin-rn-add-testid",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Legacy react native code test id patcher",
   "main": "lib/index.js",
   "scripts": {
     "prebuild": "rm -rf lib/",
     "build": "babel -d lib --ignore \"**/*.test.js\" src",
     "prepublishOnly": "yarn run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx babel tests/dummy.js"
   },
   "repository": {
     "type": "git",
@@ -33,5 +33,10 @@
   "bugs": {
     "url": "https://github.com/teod/babel-plugin-rn-add-testid/issues"
   },
-  "homepage": "https://github.com/teod/babel-plugin-rn-add-testid#readme"
+  "homepage": "https://github.com/teod/babel-plugin-rn-add-testid#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-syntax-jsx": "^7.10.1"
+  }
 }
