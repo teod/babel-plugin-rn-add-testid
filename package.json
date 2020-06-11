@@ -1,13 +1,14 @@
 {
   "name": "babel-plugin-rn-add-testid",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Legacy react native code test id patcher",
   "main": "lib/index.js",
   "scripts": {
     "prebuild": "rm -rf lib/",
     "build": "babel -d lib --ignore \"**/*.test.js\" src",
     "prepublishOnly": "yarn run build",
-    "test": "npx babel tests/dummy.js"
+    "test": "npx ava tests/index.test.js",
+    "dummy": "npx babel tests/dummy.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
-    "@babel/plugin-syntax-jsx": "^7.10.1"
+    "@babel/plugin-syntax-jsx": "^7.10.1",
+    "ava": "^3.8.2"
   }
 }
