@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-rn-add-testid",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Legacy react native code test id patcher",
   "main": "lib/index.js",
   "scripts": {

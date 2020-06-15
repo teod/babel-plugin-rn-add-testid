@@ -53,49 +53,77 @@ The plugin parses the contents of the `<Text/>` node and adds its value(s) as <b
 <b>in:</b>
 ```javascript
 <Text>Big brown fox</Text>
-
-<Text>{value}</Text>
-
-<Text>Big brown fox {value}</Text>
-
-<Text
-  testID="myID"
-  accessibilityLabel="My Label"
->
-  Big brown fox
-</Text>
-
-<Text />
 ```
 <b>out:</b>
 ```javascript
 <Text
   testID="big_brown_fox"
-  accessibilityLabel="Big brown fox"
+  accessibilityLabel="big_brown_fox"
 >
   Big brown fox
 </Text>
+```
 
+___
+
+<b>in:</b>
+```javascript
+<Text>{value}</Text>
+```
+<b>out:</b>
+```javascript
 <Text
   testID={value}
   accessibilityLabel={value}
 >
   {value}
 </Text>
+```
 
+___
+
+<b>in:</b>
+```javascript
+<Text>Big brown fox {value}</Text>
+```
+<b>out:</b>
+```javascript
 <Text
   testID={`big_brown_fox_${value}`}
   accessibilityLabel={`big_brown_fox_${value}`}
 >
   Big brown fox {value}
 </Text>
+```
 
+___
+
+<b>in:</b>
+```javascript
 <Text
   testID="myID"
   accessibilityLabel="My Label"
 >
   Big brown fox
 </Text>
+```
+<b>out:</b>
+```javascript
+<Text
+  testID="myID"
+  accessibilityLabel="My Label"
+>
+  Big brown fox
+</Text>
+```
 
+___
+
+<b>in:</b>
+```javascript
+<Text />
+```
+<b>out:</b>
+```javascript
 <Text testID="unknown-0" accessibilityLabel="unknown-0" />
 ```
